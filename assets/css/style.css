@@ -28,6 +28,14 @@
     hsl(240, 1%, 25%) 3%, 
     hsl(0, 0%, 19%) 97%
   );
+  .timeline-list,
+.timeline-list .timeline-item,
+.timeline-list .timeline-item h4,
+.timeline-list .timeline-item span,
+.timeline-list .timeline-item p {
+  color: white;
+}
+
   --bg-gradient-jet: linear-gradient(
     to bottom right, 
     hsla(240, 1%, 18%, 0.251) 0%, 
@@ -555,6 +563,64 @@ main {
   line-height: 1.6;
 }
 
+
+/**
+ * #hackathons 
+ */
+
+.hackathons { margin-bottom: 35px; }
+
+.hackathons-title { margin-bottom: 20px; }
+
+.hackathons-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.hackathon-item {
+  position: relative;
+  background: var(--border-gradient-onyx);
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: var(--shadow-2);
+  z-index: 1;
+}
+
+.hackathon-item::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: var(--eerie-black-1);
+  border-radius: inherit;
+  z-index: -1;
+}
+
+.hackathon-icon-box { margin-bottom: 10px; }
+
+.hackathon-icon-box img { margin: auto; }
+
+.hackathon-content-box { text-align: center; }
+
+.hackathon-item-title { 
+  margin-bottom: 7px; 
+  color: var(--white-1);
+}
+
+.hackathon-item-text {
+  color: var(--white-1);
+  font-size: var(--fs-6);
+  font-weight: var(--fw-300);
+  line-height: 1.6;
+}
+
+.hackathon-content-box span {
+  color: var(--vegas-gold);
+  font-weight: var(--fw-400);
+  line-height: 1.6;
+  display: block;
+  margin-bottom: 7px;
+}
 
 /**
  * #testimonials 
@@ -1405,6 +1471,23 @@ textarea.form-input::-webkit-resizer { display: none; }
   }
 
   .service-content-box { text-align: left; }
+  
+  /* hackathons */
+  
+  .hackathon-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 30px;
+  }
+  
+  .hackathon-icon-box {
+    margin-bottom: 0;
+    margin-top: 5px;
+  }
+  
+  .hackathon-content-box { text-align: left; }
 
   /* testimonials */
 
@@ -1726,6 +1809,13 @@ textarea.form-input::-webkit-resizer { display: none; }
   /* service */
 
   .service-list {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 25px;
+  }
+  
+  /* hackathons */
+  
+  .hackathons-list {
     grid-template-columns: 1fr 1fr;
     gap: 20px 25px;
   }
