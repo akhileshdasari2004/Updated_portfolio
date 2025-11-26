@@ -14,42 +14,53 @@ sidebarBtn.addEventListener("click", function () {
   elementToggleFunc(sidebar);
 });
 
-// testimonials variables
+// testimonials variables (now optional; safe if section is removed)
 const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
 const modalContainer = document.querySelector("[data-modal-container]");
 const modalCloseBtn = document.querySelector("[data-modal-close-btn]");
 const overlay = document.querySelector("[data-overlay]");
 
-// modal variable
+// modal variables
 const modalImg = document.querySelector("[data-modal-img]");
 const modalTitle = document.querySelector("[data-modal-title]");
 const modalText = document.querySelector("[data-modal-text]");
 
-// modal toggle function
-const testimonialsModalFunc = function () {
-  modalContainer.classList.toggle("active");
-  overlay.classList.toggle("active");
-};
+// Only wire up testimonials modal if all required elements exist
+if (
+  testimonialsItem.length > 0 &&
+  modalContainer &&
+  modalCloseBtn &&
+  overlay &&
+  modalImg &&
+  modalTitle &&
+  modalText
+) {
+  // modal toggle function
+  const testimonialsModalFunc = function () {
+    modalContainer.classList.toggle("active");
+    overlay.classList.toggle("active");
+  };
 
-// add click event to all modal items
-for (let i = 0; i < testimonialsItem.length; i++) {
-  testimonialsItem[i].addEventListener("click", function () {
-    modalImg.src = this.querySelector("[data-testimonials-avatar]").src;
-    modalImg.alt = this.querySelector("[data-testimonials-avatar]").alt;
-    modalTitle.innerHTML = this.querySelector(
-      "[data-testimonials-title]"
-    ).innerHTML;
-    modalText.innerHTML = this.querySelector(
-      "[data-testimonials-text]"
-    ).innerHTML;
+  // add click event to all modal items
+  for (let i = 0; i < testimonialsItem.length; i++) {
+    testimonialsItem[i].addEventListener("click", function () {
+      modalImg.src = this.querySelector("[data-testimonials-avatar]").src;
+      modalImg.alt = this.querySelector("[data-testimonials-avatar]").alt;
+      modalTitle.innerHTML = this.querySelector(
+        "[data-testimonials-title]"
+      ).innerHTML;
+      modalText.innerHTML = this.querySelector(
+        "[data-testimonials-text]"
+      ).innerHTML;
 
-    testimonialsModalFunc();
-  });
+      testimonialsModalFunc();
+    });
+  }
+
+  // add click event to modal close button
+  modalCloseBtn.addEventListener("click", testimonialsModalFunc);
+  overlay.addEventListener("click", testimonialsModalFunc);
 }
-
-// add click event to modal close button
-modalCloseBtn.addEventListener("click", testimonialsModalFunc);
-overlay.addEventListener("click", testimonialsModalFunc);
 
 // custom select variables
 const select = document.querySelector("[data-select]");
@@ -101,11 +112,6 @@ for (let i = 0; i < filterBtn.length; i++) {
   });
 }
 
-// Initialize EmailJS
-(function() {
-  emailjs.init();
-})();
-
 // contact form variables
 const form = document.querySelector("[data-form]");
 const formInputs = document.querySelectorAll("[data-form-input]");
@@ -123,41 +129,43 @@ for (let i = 0; i < formInputs.length; i++) {
   });
 }
 
-// Handle form submission
-form.addEventListener('submit', function(event) {
+// Handle form submission via PHP backend
+form.addEventListener("submit", function (event) {
   event.preventDefault();
-  
+
   // Show sending indicator
-  formBtn.innerHTML = '<ion-icon name="hourglass-outline"></ion-icon><span>Sending...</span>';
+  formBtn.innerHTML =
+    '<ion-icon name="hourglass-outline"></ion-icon><span>Sending...</span>';
   formBtn.disabled = true;
-  
-  // Prepare template parameters
-  const templateParams = {
-    from_name: document.querySelector('input[name="fullname"]').value,
-    from_email: document.querySelector('input[name="email"]').value,
-    message: document.querySelector('textarea[name="message"]').value
-  };
-  
-  // Send email using EmailJS
-  emailjs.send('service_id', 'template_id', templateParams)
-    .then(function() {
+
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.text())
+    .then(() => {
       // Show success message
-      formBtn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon><span>Message Sent!</span>';
-      
+      formBtn.innerHTML =
+        '<ion-icon name="checkmark-outline"></ion-icon><span>Message Sent!</span>';
+
       // Reset form after 3 seconds
-      setTimeout(function() {
+      setTimeout(function () {
         form.reset();
-        formBtn.innerHTML = '<ion-icon name="paper-plane"></ion-icon><span>Send Message</span>';
+        formBtn.innerHTML =
+          '<ion-icon name="paper-plane"></ion-icon><span>Send Message</span>';
         formBtn.disabled = true;
       }, 3000);
-    }, function(error) {
-      // Show error message
-      console.error('Email sending failed:', error);
-      formBtn.innerHTML = '<ion-icon name="alert-outline"></ion-icon><span>Failed to send</span>';
-      
-      // Reset button after 3 seconds
-      setTimeout(function() {
-        formBtn.innerHTML = '<ion-icon name="paper-plane"></ion-icon><span>Send Message</span>';
+    })
+    .catch((error) => {
+      console.error("Form submission failed:", error);
+      formBtn.innerHTML =
+        '<ion-icon name="alert-outline"></ion-icon><span>Failed to send</span>';
+
+      setTimeout(function () {
+        formBtn.innerHTML =
+          '<ion-icon name="paper-plane"></ion-icon><span>Send Message</span>';
         formBtn.disabled = false;
       }, 3000);
     });
